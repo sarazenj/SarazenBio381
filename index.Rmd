@@ -4,14 +4,16 @@ author: "Jillian Sarazen"
 date: "1/22/2020"
 output:
   html_document:
-    highlight: zenburn
-    theme: yeti
+    highlight: null
+    prettydoc::html_pretty: null
   pdf_document: default
 ---
 
-![photo](SarazenBio381/jill_photo.JPG)
+<img src="jill_photo.JPG" width="600" height="450 />"
+
 
 ## Homework Assignments
 
 
-### #1 [Typora document](TyporaHW1.html)
+#### #1 [Typora document](TyporaHW1.html)
+
