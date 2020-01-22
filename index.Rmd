@@ -1,14 +1,14 @@
 ---
-title: "Bio381 HW"
+title: "Bio 381 Portfolio"
 author: "Jillian Sarazen"
 date: "1/22/2020"
-output: 
-  html_document: 
-    highlight: espresso
+output:
+  html_document:
+    highlight: zenburn
     theme: yeti
+  pdf_document: default
 ---
 
+## Homework Assignments
 
-## Homework 1
-[Typora document](TyporaHW1.html)
-
+### #1 [Typora document](TyporaHW1.html)
