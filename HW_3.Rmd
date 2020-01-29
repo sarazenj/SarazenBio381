@@ -1,0 +1,48 @@
+---
+title: "HW3"
+author: "Jillian Sarazen"
+date: "1/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### problem 1
+#### ```find: \t+```
+#### ```replace: ,```
+  ## this changes all of the tabs (one or more) to commas
+  
+#### problem 2
+#### ```find: (\w+), (\w+), (.*)```
+#### ```replace: \2 \1 (\3)```
+  ## captures each word in the (), not including the "," 
+  ## .* does all the rest to the line break
+  ## each capture gets a number, and then in replace change the order. the () then goes around the last word
+
+#### problem 3
+#### ```find: .mp3```
+#### ```replace: .mp3\n```
+  ## \n puts in a single line break
+  
+#### problem 4
+#### ```find: (\w+) (.*)(.mp3)```
+#### ```replace: \2\_\1\3```
+  ## captures first numbers, leaves out the space, captures all the rest. keeps the .mp3
+  
+#### problem 5
+#### ```find: (\w)\w+,(\w+),(.+),(.+)```
+#### ```replace: \1_\2,\4```
+  ## in find, keeps the first letter, gets rid of the letters after that up until the "," then keeps the letters from the second word, gets rid of the commma, captures all the rest (which is then deleted in the replace). the (.+) keep the remaining number after the "."
+  
+#### problem 6
+#### ```find: (\w)\w+,(\w{4})\w+,(.+),(.+)```
+#### ```replace: \1_\2,\4```
+  ## this is the same expression as the last problem, but I added the (\w{4}) so that it keeps the first 4 letters of the second word. Then added the \w+, so it doesn't keep the next letters until the ","
+  
+#### problem 7
+#### ```find: (\w{3})\w+,(\w{3})\w+,(.+),(.+)```
+#### ```replace: \1\2, \4, \3```
+  ## remember that the groups that are captured are only given numbers!
+  ## for this I kept the first 3 letters from each word. also kept the numbers. In find, I then reordered the numbers and added in the space and ","
