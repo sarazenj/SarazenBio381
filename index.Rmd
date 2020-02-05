@@ -15,5 +15,6 @@ output:
 ## Homework Assignments
 
 
-#### #1 [Typora document](TyporaHW1.html)
-#### #2 [Regular expressions](HW_3.html)
+#### #1+2 [Typora document](TyporaHW1.html)
+#### #3 [Regular expressions](HW_3.html)
+#### #4 [Data Structures](HW_4.html)
