@@ -9,7 +9,7 @@ output:
   pdf_document: default
 ---
 
-<img src="jill_photo.JPG" width="600" height="450 />"
+<img src="jill_photo.JPG" width="400" height="200 />"
 
 
 ## Homework Assignments
