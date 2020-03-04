@@ -19,6 +19,6 @@ output:
 #### #3 [Regular expressions](HW_3.html)
 #### #4 [Data Structures](HW_4.html)
 #### #5 [Matrices, lists, and data frames](HW_5.html)
-#### #6 [Simulating and Fitting Data Distributions](HW_6.html) - *Not finished yet need to do modeling part
+#### #6 [Simulating and Fitting Data Distributions](HW_6.html) - (Not finished yet need to do modeling part)
 #### #7 [Exploring Hypotheses](HW_7.html)
 #### #8 [dplyr](HW_8.html)
