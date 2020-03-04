@@ -1,0 +1,95 @@
+---
+title: "HW_7"
+author: "Jillian Sarazen"
+date: "2/26/2020"
+output: html_document
+---
+
+## Homework #7: Creating Fake Data Sets To Explore Hypotheses
+
+#### Data in each of your treatment groups follow a normal distribution. Specify the sample sizes, means, and variances for each group that would be reasonable if your hypothesis were true.
+
+```{r}
+
+# this section of code sets the parameters of the data, SD, mean, sample size
+n_group <- 2 # number of treatment groups
+n_names <- c("WCB1", "WCB2") # WCB1 = woodchip bioreactor 1 (and 2, there are 2 outflows)
+n_size <- c(14,15) # size is number of samples, aka number of storm events
+n_mean <- c(23.79,45.39) # means of the two groups
+n_sd <- c(13.57,25.24)
+t_group <- rep(n_names,n_size) # this makes a t_group that has names of the treatment groups repeated for the whole sample size
+t_group
+table(t_group)
+
+```
+
+
+# this chunk of code sets up the data frame, one column is id, then t_group (made above, all the treatments)
+```{r}
+
+id <- 1:(sum(n_size)) # the sum of both samples from both groups
+# random normal numbers to make up the value column (in my case TN values) 
+res_var <- c(rnorm(n=n_size[1],mean=n_mean[1],sd=n_sd[1]), 
+             rnorm(n=n_size[2],mean=n_mean[2],sd=n_sd[2]))
+
+ano_data <- data.frame(id,t_group,res_var) 
+str(ano_data)
+
+```
+
+
+
+
+
+## Running ANOVA model
+
+```{r}
+
+# ~ means "as a function of"
+ano_model <- aov(res_var~t_group,data=ano_data)
+print(ano_model) # to get the model
+print(summary(ano_model)) # gets all elements of the model 
+z <- summary(ano_model) # save as a vector
+str(z)
+aggregate(res_var~t_group,data=ano_data,FUN=mean) # separates out by the t_group and gives the mean of each group. applying a common operation to several columns
+
+unlist(z)
+unlist(z)[7] # takes the f value out, need to go in the summary section and figure out what you want and the number
+ano_sum <- list(Fval=unlist(z)[7],
+                probF=unlist(z)[9])
+ano_sum
+
+```
+
+## Plot data using a boxplot
+
+```{r}
+
+# ggplot for ANOVA data ---------------------------------------------------
+library(ggplot2)
+
+
+ano_plot <- ggplot(data=ano_data,
+                   aes(x=t_group, # aes=specify asthetics
+                       y=res_var,
+                       fill=t_group)) +# fill to specify a grouping variable
+                      geom_boxplot()
+print(ano_plot)
+
+```
+
+
+# My observations about from rerunning the code:
+
+The first time that I ran the code I got a significant P value, but the next 2 times the P value was not significant. 
+
+#### Change the parameters around: Made sample size to 10 compared to 15.
+Sample size is important to see a difference, because when I had parameters of the same SD, sample size of 30 (increased from 15), and means of 25 and 30. I got a significant difference. Change the sample sizes down to 10, and the P value is now 0.1466. 
+
+#### Ran this code with my real data for sd, mean, and sample size (however they are not actually normally distributed)
+I got a P value of 0.002, which makese sense that the two groups (outflows) seem to be visually different from each other. 
+
+
+#### Alternatively, for the effect sizes you originally hypothesized, what is the minimum sample size you would need in order to detect a statistically significant effect? Again, run the model a few times with the same parameter set to get a feeling for the effect of random variation in the data.
+Even for a sample size of 6, I still got a significant P-val
+

@@ -1,0 +1,132 @@
+---
+title: "HW6"
+author: "Jillian Sarazen"
+date: "2/19/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+setwd("/Users/Jill/Desktop/Silage_R_New")
+
+z <- read.table("MyDataFile.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
+
+## quick and dirty, a truncated normal distribution to work on the solution set
+## don't need this for when using my data
+z <- rnorm(n=3000,mean=0.2)
+z <- data.frame(1:3000,z)
+names(z) <- list("ID","myVar")
+z <- z[z$myVar>0,]
+str(z)
+summary(z$myVar)
+```
+
+
+```{r}
+# this is another way to read in data using read.table, but not going to use it below
+S_2019 <- read.table("Silage_Hydrology_Table_2019.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
+
+# tidyr example - to get short data into long data format
+# not needed for my data, this might just be good code to have
+long_DF <- gather(z, Time, Data, Time1:Time3)
+print(long_DF)
+```
+
+
+```{r}
+## reading in my own data
+setwd("/Users/Jill/Desktop/Silage_R_New")
+
+## read.table function allows you to have metadata at the top and then R will not read in the metadata 
+S_2019 <- read.csv("Silage_Hydrology_Table_2019.csv", header = TRUE)
+str(S_2019)
+summary(S_2019)
+
+# load packages
+library(ggplot2) # for graphics
+library(MASS) # for maximum likelihood estimation
+
+
+# need to remove NAs from the data because of doing calculations further down
+print(x=S_2019$S1_TN_mg_L)
+complete.cases(S_2019$S1_TN_mg_L)
+# make a new vector that ommits the NAs
+S1_TN_vec <- S_2019$S1_TN_mg_L[complete.cases(S_2019$S1_TN_mg_L)] # clean them out
+S1_TN <- data.frame(S1_TN_vec=S1_TN)
+head(S1_TN)
+
+# plot a histogram of the data
+p1 <- ggplot(data=S1_TN, aes(x=S1_TN_vec, y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) 
+print(p1)
+
+# Add empirical density curve
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+
+# Get maximum likelihood parameters for normal. Fit a normal distribution to your data and grab the maximum likelihood estimators of the two parameters of the normal, the mean and the variance:
+normPars <- fitdistr(S1_TN_vec,"normal")
+print(normPars)
+str(normPars)
+normPars$estimate["mean"] # note structure of getting a named attribute
+
+# Plot normal probability density 
+meanML <- normPars$estimate["mean"]
+sdML <- normPars$estimate["sd"]
+
+xval <- seq(0,max(S1_TN_vec, na.rm = TRUE),len=length(S1_TN_vec))
+
+stat <- stat_function(aes(x = xval, y = ..y..), fun = dnorm, colour="red", n = length(S1_TN_vec), args = list(mean = meanML, sd = sdML))
+p1 + stat
+
+
+# Plot exponential probability density
+expoPars <- fitdistr(S1_TN_vec,"exponential")
+rateML <- expoPars$estimate["rate"]
+
+stat2 <- stat_function(aes(x = S1_TN_vec, y = ..y..), fun = dexp, colour="blue", n = length(S1_TN_vec), args = list(rate=rateML))
+ p1 + stat + stat2
+ 
+ 
+# Plot uniform probability density
+## For the uniform, we don’t need to use fitdistr because the maximum likelihood estimators of the two parameters are just the minimum and the maximum of the data:
+
+stat3 <- stat_function(aes(x = xval, y = ..y..), fun = dunif, colour="darkgreen", n = length(S1_TN_vec), args = list(min=min(S1_TN_vec), max=max(S1_TN_vec)))
+ p1 + stat + stat2 + stat3
+ 
+
+# Plot gamma probability density
+gammaPars <- fitdistr(S1_TN_vec,"gamma")
+shapeML <- gammaPars$estimate["shape"]
+rateML <- gammaPars$estimate["rate"]
+
+stat4 <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="brown", n = length(S1_TN_vec), args = list(shape=shapeML, rate=rateML))
+ p1 + stat + stat2 + stat3 + stat4
+
+# Plot beta probability density
+## This one has to be shown in its own plot because the raw data must be rescaled so they are between 0 and 1, and then they can be compared to the beta.
+
+pSpecial <- ggplot(data=S1_TN, aes(x=S1_TN_vec/(max(S1_TN_vec + 0.1)), y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) + 
+  xlim(c(0,1)) +
+  geom_density(size=0.75,linetype="dotted")
+
+betaPars <- fitdistr(x=S1_TN_vec/max(S1_TN_vec + 0.1),start=list(shape1=1,shape2=2),"beta")
+shape1ML <- betaPars$estimate["shape1"]
+shape2ML <- betaPars$estimate["shape2"]
+
+statSpecial <- stat_function(aes(x = xval, y = ..y..), fun = dbeta, colour="orchid", n = length(S1_TN_vec), args = list(shape1=shape1ML,shape2=shape2ML))
+pSpecial + statSpecial
+ 
+```
+
+## similate the data using the Rgamma function
+## the best fit is likely the gamma distribution for my data, but none of them fit it very well to begin with 
+
+
