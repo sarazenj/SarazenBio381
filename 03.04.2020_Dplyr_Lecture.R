@@ -116,7 +116,7 @@ summarize(starwars, meanHeight=mean(height), TotalNumber = n())
 starwarsGenders <- group_by(starwars, gender)
 head(starwarsGenders)
 
-summarize(starwarsGenders, meanHeight=mean(height, na.rm=TRUE) number=n())
+summarize(starwarsGenders, meanHeight=mean(height, na.rm=TRUE), number=n())
 
 ## Piping
 # use to emphasize a sequence of actions 

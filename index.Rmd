@@ -9,7 +9,7 @@ output:
   pdf_document: default
 ---
 
-<img src="jill_photo.JPG" width="400" height="200 />"
+<img src="jill_photo.JPG" width="400" height="200" />
 
 
 ## Homework Assignments
@@ -22,3 +22,4 @@ output:
 #### #6 [Simulating and Fitting Data Distributions](HW_6.html) - (Not finished yet need to do modeling part)
 #### #7 [Exploring Hypotheses](HW_7.html)
 #### #8 [dplyr](HW_8.html)
+#### #9
