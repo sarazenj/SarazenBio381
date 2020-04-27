@@ -1,0 +1,177 @@
+---
+title: "HW_12"
+author: "Jillian Sarazen"
+date: "4/25/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+Advanced ggplotting
+
+1) For this exerise, use your newly-developed ggplot chops to create some nice graphs from your own data (If you do not have a good data frame to use for graphics, use one of the many built-in data frames from R (other than mpg, which we are using in class)). Experiment with different themes, theme base sizes, aesthetics, mappings, and faceting. When you are finished, try exporting them to high quality pdfs, jpgs, eps files, or other formats that you would use for submission to a journal.
+
+In this exercise, I encourage you to improve your graphics with elements that we have not (yet) covered in ggplot. For example, can you change the labels on a facet plot so that they are more informative than the variable names that are supplied from your data frame? Can you figure out how to add text annotations, lines and arrows to your graph? Can you figure out how to use custom colors that you have chosen for your fills and lines? Your resources for these explorations are google, Stack Overflow – and Lauren!
+
+```{r}
+
+# preliminaries
+S_2019 <- read.csv("Silage_Hydrology_Table_2019_copy.csv", header = TRUE)
+library(ggplot2)
+library(cowplot)
+library(ggthemes)
+library(patchwork)
+library(colorspace)
+library(reshape2)
+
+# set colors in a vector
+my_cols <- c("#0868ac","#a8ddb5","#e0f3db")
+
+
+######## Inflow N Concentrations ######## 
+InflowTN <- S_2019$S1_TN_mg_L
+InflowNH4 <- S_2019$S1_NH3_mg_N_L
+InflowNO3 <- S_2019$S1_NO2_NO3_mg_N_L
+Date <- S_2019$StartDate
+
+# combine the data frames
+df1 <- data.frame(Date, InflowTN, InflowNH4, InflowNO3)
+df2 <- melt(df1, id.vars='Date')
+
+# plot
+n1 <- ggplot(df2, aes(x=variable, y=value, fill=variable)) +
+        geom_boxplot(width=0.7, color="black",outlier.shape=NA) +
+        labs(title="System Inflow",
+             x=NULL,
+             y="N (mg/L)") +
+      geom_point(position=position_jitter(width=0.15, height=0.7),
+             color="gray30",size=1.2)
+
+n1.1 <- n1 + scale_fill_manual(values=my_cols) + 
+        theme_bw(base_size=8) +
+        ylim(0,160) + 
+        theme(legend.position = "none", 
+              axis.text.x=element_blank(), axis.ticks.x=element_blank()) + 
+        panel_border(color = "gray0", size = 0.6)        
+print(n1.1)
+
+
+####### TankOutflow N Concentrations ######## 
+TankOutflowTN <- S_2019$S2_TN_mg_L
+TankOutflowNH4 <- S_2019$S2_NH3_mg_N_L
+TankOutflowNO3 <- S_2019$S2_NO2_NO3_mg_N_L
+Date <- S_2019$StartDate
+
+# combine the data frames
+df1 <- data.frame(Date, TankOutflowTN, TankOutflowNH4, TankOutflowNO3)
+df2 <- melt(df1, id.vars='Date')
+
+# plot it up 
+n2 <- ggplot(df2, aes(x=variable, y=value, fill=variable)) +
+        geom_boxplot(width=0.7, color="black",outlier.shape=NA) + 
+        labs(title="Tank Outflow",
+             x=NULL,
+             y=NULL) +
+  geom_point(position=position_jitter(width=0.15,
+                                      height=0.7),
+             color="gray30",size=1.2)
+
+n2.1 <- n2 + scale_fill_manual(values=my_cols) + 
+        theme_bw(base_size=8) +
+        ylim(0,160) + 
+        theme(legend.position = "none",
+              axis.text=element_blank(), axis.ticks=element_blank()) +
+        panel_border(color = "gray0", size = 0.6)
+print(n2.1)
+
+###### WCB1 N Concentrations ########
+WCB1_TN <- S_2019$S3_TN_mg_L
+WCB1_NH4 <- S_2019$S3_NH3_mg_N_L
+WCB1_NO3 <- S_2019$S3_NO2_NO3_mg_N_L
+Date <- S_2019$StartDate
+
+# combine the data frames
+df1 <- data.frame(Date, WCB1_TN, WCB1_NH4, WCB1_NO3)
+df2 <- melt(df1, id.vars='Date')
+
+# plot it up 
+n3 <- ggplot(df2, aes(x=variable, y=value, fill=variable)) +
+        geom_boxplot(width=0.7, color="black",outlier.shape=NA) +
+        labs(title="WB Outflow",
+             x=NULL,
+             y=NULL) +
+    geom_point(position=position_jitter(width=0.15, height=0.7),
+             color="gray30",size=1.2)
+
+n3.1 <- n3 + scale_fill_manual(values=my_cols) + 
+        theme_bw(base_size=8) +
+        ylim(0,160) + 
+        theme(legend.position = "none", axis.text=element_blank(),
+              axis.ticks=element_blank()) +
+        panel_border(color = "gray0", size = 0.6)
+print(n3.1)
+
+###### WCB2 N Concentrations ########
+WCB2_TN <- S_2019$S4_TN_mg_L
+WCB2_NH4 <- S_2019$S4_NH3_mg_N_L
+WCB2_NO3 <- S_2019$S4_NO2_NO3_mg_N_L
+Date <- S_2019$StartDate
+
+# combine the data frames
+df1 <- data.frame(Date, WCB2_TN, WCB2_NH4, WCB2_NO3)
+df2 <- melt(df1, id.vars='Date')
+
+# plot it up 
+n4 <- ggplot(df2, aes(x=variable, y=value, fill=variable)) +
+        geom_boxplot(width=0.7, color="black",outlier.shape=NA) +
+        labs(title="EB Outflow",
+             x=NULL,
+             y=NULL) +
+      geom_point(position=position_jitter(width=0.15,height=0.7),
+             color="gray30",size=1.2)
+        
+n4.1 <- n4  + theme_bw(base_size=8) + 
+  scale_fill_manual(#labels = c("TN", "NH4+", "NOx-"),
+    values=my_cols) +
+        ylim(0,160) + 
+        #theme(legend.position = "bottom", 
+         #     legend.title =element_blank(),
+          #    legend.text=element_text(size=10),
+           #   legend.background=element_blank()) +
+  theme(legend.position = "none") +
+        theme(axis.text=element_blank(), axis.ticks.y=element_blank(),
+        axis.ticks=element_blank()) +
+        panel_border(color = "gray0", size = 0.6)
+
+print(n4.1)
+
+# c(0.7,0.8) - to get the legend as part of the graph
+# combine graphs into one 
+
+# originally I used cowplot Plot_grid function
+z2 <- plot_grid(n1.1, n2.1, n3.1, n4.1,
+               align = "h", ncol = 4, nrow = 1,
+               rel_widths = c(1.1,.9,.9,.9))
+print(z2)
+
+# patchwork also works too
+n1.1 + n2.1 + n3.1 + n4.1 + plot_layout(ncol=4)
+
+ggsave(plot = n4.1, 
+       filename="legend", 
+       width=5, 
+       height=6, 
+       units="in",
+       device="jpeg")
+
+
+ggsave(plot = z2,
+          filename = "Silage_N_Concentrations_2019",
+          width = 6.3,
+          height = 2.5,
+          units = "in",
+          device = "jpeg")
+```
+
+
+Cool to use the points on the plots, and using the color vector to keep same colors throughout. Might change colors eventually... Need to figure out how to do the combined legend for the whole graph!

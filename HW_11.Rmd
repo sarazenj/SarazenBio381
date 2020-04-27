@@ -1,0 +1,9 @@
+---
+title: "HW_11"
+author: "Jillian Sarazen"
+date: "4/24/2020"
+output: html_document
+---
+
+
+## maybe for this I can use the ISCO files and calculate the min, max and average flow rate from each? A full way of doing this would be to separate out into storm events, but I don't know if I really want to do that..

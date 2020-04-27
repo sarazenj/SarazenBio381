@@ -24,3 +24,5 @@ output:
 #### #8 [dplyr](HW_8.html)
 #### #9 [Organizing code with structured programming](HW_9.html)
 #### #10 [For loops and randomization tests](HW_10.html)
+#### #11 
+#### #12 [Advanced ggplotting](HW_12.Rmd)
