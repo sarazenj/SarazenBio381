@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-setwd("/Users/Jill/Desktop/Silage_R_New")
+# setwd("/Users/Jill/Desktop/Silage_R_New")
 
-z <- read.table("MyDataFile.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
+# z <- read.table("MyDataFile.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
 
 ## quick and dirty, a truncated normal distribution to work on the solution set
 ## don't need this for when using my data
@@ -30,23 +30,23 @@ summary(z$myVar)
 
 ```{r}
 # this is another way to read in data using read.table, but not going to use it below
-S_2019 <- read.table("Silage_Hydrology_Table_2019.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
+# S_2019 <- read.csv("Silage_Hydrology_Table_2019.csv",header=TRUE,sep=",")
 
+# library(tidyr)
 # tidyr example - to get short data into long data format
 # not needed for my data, this might just be good code to have
-long_DF <- gather(z, Time, Data, Time1:Time3)
-print(long_DF)
+# long_DF <- gather(z, Time, Data, Time1:Time3)
+# print(long_DF)
 ```
 
 
 ```{r}
 ## reading in my own data
-setwd("/Users/Jill/Desktop/Silage_R_New")
 
 ## read.table function allows you to have metadata at the top and then R will not read in the metadata 
-S_2019 <- read.csv("Silage_Hydrology_Table_2019.csv", header = TRUE)
-str(S_2019)
-summary(S_2019)
+S_2019 <- read.csv("Silage_Hydrology_Table_2019_copy.csv", header = TRUE)
+# str(S_2019)
+# summary(S_2019)
 
 # load packages
 library(ggplot2) # for graphics
@@ -58,8 +58,10 @@ print(x=S_2019$S1_TN_mg_L)
 complete.cases(S_2019$S1_TN_mg_L)
 # make a new vector that ommits the NAs
 S1_TN_vec <- S_2019$S1_TN_mg_L[complete.cases(S_2019$S1_TN_mg_L)] # clean them out
-S1_TN <- data.frame(S1_TN_vec=S1_TN)
+S1_TN <- data.frame(S1_TN_vec=S1_TN_vec)
 head(S1_TN)
+
+mean(S1_TN_vec)
 
 # plot a histogram of the data
 p1 <- ggplot(data=S1_TN, aes(x=S1_TN_vec, y=..density..)) +
@@ -123,10 +125,46 @@ shape2ML <- betaPars$estimate["shape2"]
 
 statSpecial <- stat_function(aes(x = xval, y = ..y..), fun = dbeta, colour="orchid", n = length(S1_TN_vec), args = list(shape1=shape1ML,shape2=shape2ML))
 pSpecial + statSpecial
- 
+
+
 ```
 
-## similate the data using the Rgamma function
-## the best fit is likely the gamma distribution for my data, but none of them fit it very well to begin with 
+similate the data using the Rgamma function
+the best fit is likely the gamma distribution for my data, but none of them fit it very well to begin with 
+
+
+5) Using the best-fitting distribution, go back to the code and get the maximum likelihood parameters. Use those to simulate a new data set, with the same length as your original vector, and plot that in a histogram and add the probability density curve. Right below that, generate a fresh histogram plot of the original data, and also include the probability density curve.
+
+```{r}
+
+# simulating the data using the rgamma function, my mean and my n from original data
+z <- rgamma(n=16,shape=60)
+z <- data.frame(1:16,z)
+names(z) <- list("ID","myVar")
+z <- z[z$myVar>0,]
+str(z)
+summary(z$myVar)
+
+# plot in histogram
+p1 <- ggplot(data=z, aes(x=myVar, y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) 
+print(p1)
+
+# add probability density curve to the simulated data histogram
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+
+# fresh histogram of the original data
+p1 <- ggplot(data=S1_TN, aes(x=S1_TN_vec, y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) 
+print(p1)
+
+# add probability density curve to the original data histogram
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+
+```
+
+Looking at the two graphs, my original and simulated gamma distribution, they are not very similar. My original data is skewed left more and the range is wider than what the similaed data has. I think the simulated data doesn't include outliers as much.
 
 

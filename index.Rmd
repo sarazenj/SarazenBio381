@@ -1,7 +1,7 @@
 ---
 title: "Bio 381 Portfolio"
 author: "Jillian Sarazen"
-date: "1/22/2020"
+date: "Spring 2020"
 output:
   html_document:
     highlight: null
@@ -15,14 +15,15 @@ output:
 ## Homework Assignments
 
 
-#### #1+2 [Typora document](TyporaHW1.html)
+#### #1&2 [Typora document](TyporaHW1.html)
 #### #3 [Regular expressions](HW_3.html)
 #### #4 [Data Structures](HW_4.html)
 #### #5 [Matrices, lists, and data frames](HW_5.html)
-#### #6 [Simulating and Fitting Data Distributions*](HW_6.html)
+#### #6 [Simulating and Fitting Data Distributions](HW_6.html)
 #### #7 [Exploring Hypotheses](HW_7.html)
 #### #8 [dplyr](HW_8.html)
 #### #9 [Organizing code with structured programming](HW_9.html)
 #### #10 [For loops and randomization tests](HW_10.html)
-#### #11 
+#### #11 [Batch processing](HW_11.html)
 #### #12 [Advanced ggplotting](HW_12.html)
+

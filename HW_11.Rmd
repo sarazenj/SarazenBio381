@@ -4,6 +4,116 @@ author: "Jillian Sarazen"
 date: "4/24/2020"
 output: html_document
 ---
+Batch Processing
+
+1) Repeat the exercise from the Batch Processing Lecture (7th April), but do it using real data sets rather than purely simulated. Check with folks in your lab to see if there are multiple data sets available for analysis. Stick to simple data analyses and graphics, but try to set it up as a batch process that will work on multiple files and save summary results to a common file.
+
+I have a for loop code that I had help with writing, so I am going to edit it here and try to use batch processing, functions, and the coding skills we learned to improve it.
+
+The pasting at the top of the graphs isn't the best, but I still get the information that I want - the min and max flow rates, and the whole code works.
+
+```{r}
+
+#set the working directory to the folder you want
+setwd("/Users/Jill/Desktop/BIO 381/SarazenBio381/ISCOS")
+#list the files in that folder, just to check that we got the right place
+list.files("/ISCOS")
+
+#Get a list of all your ISCO names in the folder
+isco_names <- unique(substr(list.files(),1,2))
+print(isco_names)
+
+# creating functions to use in the loop
+
+# ---------------------------------------------
+# FUNCTION: flow_rate_range
+# description: calculate max flow rate during storm subset
+# inputs: file that is cut down to each storm event
+# outputs: a max flow rate value in L/s
+###############################################
+flow_rate_range <- function(x) {
+
+maxval <- max(x)
+minval <- min(x)
+
+min_max <- c(maxval, minval)
+
+} # end of max_flow
+#----------------------------------------------
 
 
-## maybe for this I can use the ISCO files and calculate the min, max and average flow rate from each? A full way of doing this would be to separate out into storm events, but I don't know if I really want to do that..
+# ---------------------------------------------
+# FUNCTION plot_hyrograph
+# description: makes a hydrograph with each storm subset
+# inputs: subset of storm
+# outputs: hydrograph
+###############################################
+plot_hyrograph <- function(event_flow_data=event_flow_data) {
+
+    plot(event_flow_time, event_flow_data$q.L.s_5minavg, type="l",
+         main = paste0("ISCO ",isco_names[i],", ", 
+                       substr(event_start_time[j],1,10), " to ", substr(event_end_time[j],1,10)),
+         xlab=("Time"), 
+         ylab=("Flow rate (q.l.s.5min)"), 
+         col="navyblue", lwd="2")
+  legend("topleft", paste0("Total Event Volume = ",as.character(event_vol_total_5min)," L", " Range = ",as.character(min_max)))
+ 
+          #legend("bottomright","Range = ",as.character(min_max), bty="n")
+
+
+} # end of plot_hyrograph
+#----------------------------------------------
+ 
+
+# set i=1 just in case
+i=1
+# Start a loop through Isco names
+
+  # using length function here because I don't have an S2 dataset
+for (i in 1:length(isco_names)){
+  # redefine the working directory because we change it to save plots below
+  setwd("/Users/Jill/Desktop/BIO 381/SarazenBio381/ISCOS")
+  
+# read in the files and save them as objects
+  flowdata <- read.csv(paste0(isco_names[i],"_AllEvents_19.csv"), header=T)
+  events <- read.csv(paste0(isco_names[i],"_EventStartEndTimes_19.csv"), header=T)
+  
+  # deal with time formatting
+  flow_time <- as.POSIXct(strptime(flowdata$DateTime, format = "%m/%d/%y %H:%M", tz = "EST"))
+  event_start_time <- na.omit(as.POSIXct(strptime(events$FlowStart, format = "%m/%d/%y %H:%M", tz = "EST")))
+  event_end_time <- na.omit(as.POSIXct(strptime(events$FlowEnd, format = "%m/%d/%y %H:%M", tz = "EST")))
+  
+  
+  #Open the pdf to save plots to and direct to a new working directory to save them
+  setwd("/Users/Jill/Desktop/BIO 381/SarazenBio381/Plots")
+  pdf(paste0(isco_names[i]," Events 2019.pdf")) 
+  
+  #set j=1 just in case
+  j=1
+  #loop through events
+  for (j in 1:length(event_start_time)){
+    
+  # cut down the input flow dataset to just the range of time for a single storm
+    event_flow_data <- subset(flowdata, flow_time>=event_start_time[j] & flow_time<=event_end_time[j])
+  # reformat time again 
+    event_flow_time <- as.POSIXct(strptime(event_flow_data$DateTime, format = "%m/%d/%y %H:%M", tz = "EST"))
+    
+  # calculate max flow rate during storm subset
+    min_max <- flow_rate_range(x=event_flow_data$q.L.s_5minavg)
+    
+  # calculate the sum of the total event volume for that ISCO in each event
+    event_vol_total_5min <- sum(((event_flow_data$q.L.s_5minavg)*60),na.rm=T)
+    
+  # put everything in plot
+    plot_hyrograph(event_flow_data=event_flow_data)
+    
+
+  
+  }
+  dev.off()
+}
+
+
+
+```
+
